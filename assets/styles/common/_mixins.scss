@@ -1,0 +1,18 @@
+@mixin centralize ($value){
+  left: $value;
+  top: $value;
+  transform: translate(-$value, -$value);
+}
+
+@mixin spacing-logo ($space) {
+  width: $space;
+  height: $space;
+}
+
+@mixin logo {
+  position: absolute;
+  @include spacing-logo(40px);
+  img {
+    height: 35px;
+  }
+}

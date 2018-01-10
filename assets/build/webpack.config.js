@@ -4,8 +4,19 @@ const extractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const optimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const SpritesmithPlugin = require('webpack-spritesmith');
+const ImageminPlugin  = require('imagemin-webpack-plugin').default;
+const CopyWebpackPlugin  = require('copy-webpack-plugin');
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 let plugins = [];
+
+plugins.push(new BrowserSyncPlugin({
+    host: 'localhost',
+    port: 3000,
+    server: {
+        baseDir: ['./assets/**']
+    }
+}));
 
 plugins.push(new extractTextPlugin('styles.css'));
 
@@ -59,6 +70,23 @@ if (process.env.NODE_ENV === 'production') {
     }));
 }
 
+plugins.push(new CopyWebpackPlugin([{
+    from: 'assets/images/',
+    to: 'images/'
+}]));
+
+plugins.push(new ImageminPlugin({
+    disable: process.env.NODE_ENV !== 'production',
+    pngquant: {
+        quality: '95-100'
+    },
+    optipng: {
+        optimizationLevel: 9
+    },
+    jpegtran: { progressive: true }
+}));
+
+
 module.exports = {
     entry: {
         app: './assets/build/app.js',
@@ -66,7 +94,9 @@ module.exports = {
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, '../../dist')
+        path: path.resolve(__dirname, '../../dist'),
+        pathinfo: true,
+        publicPath: 'http://localhost:3000'
     },
     module: {
         rules: [
@@ -92,6 +122,19 @@ module.exports = {
                 }
             },
             {
+                test: require.resolve('jquery'),
+                use: [
+                    {
+                        loader: 'expose-loader',
+                        query: 'jQuery',
+                    },
+                    {
+                        loader: 'expose-loader',
+                        query: '$',
+                    },
+                ]
+            },
+            {
                 test: /\.js$/,
                 use: ["source-map-loader"],
                 enforce: "pre"
@@ -114,5 +157,6 @@ module.exports = {
             }
         ]
     },
-    plugins
+    plugins,
+    devtool: "source-map"
 };

@@ -1,3 +1,6 @@
 .idea/
 node_modules/
 dist/
+vendor/
+assets/styles/common/_sprite.scss
+assets/images/sprite.png

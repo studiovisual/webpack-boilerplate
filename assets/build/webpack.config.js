@@ -175,6 +175,10 @@ module.exports = {
             {
                 test: /\.(png|jpeg|jpg)$/,
                 loader: 'url-loader?limit=100000'
+            },
+            {
+                test: /\.(png|jpeg|jpg)$/,
+                loader: 'url-loader?limit=100000'
             }
         ]
     },

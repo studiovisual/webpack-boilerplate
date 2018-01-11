@@ -16,6 +16,7 @@
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.36",
     "@babel/preset-env": "^7.0.0-beta.36",
+    "autoprefixer": "^7.2.4",
     "babel-loader": "^8.0.0-beta.0",
     "browser-sync": "^2.23.5",
     "browser-sync-webpack-plugin": "^1.2.0",
@@ -31,6 +32,9 @@
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "path": "^0.12.7",
     "popper.js": "^1.12.9",
+    "postcss-loader": "^2.0.10",
+    "precss": "^2.0.0",
+    "reflect-metadata": "^0.1.10",
     "sass-loader": "^6.0.6",
     "source-map-loader": "^0.2.3",
     "style-loader": "^0.19.1",

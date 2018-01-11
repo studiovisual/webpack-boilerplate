@@ -13,12 +13,13 @@ let plugins = [];
 plugins.push(new BrowserSyncPlugin({
     host: 'localhost',
     port: 3000,
-    server: {
-        baseDir: ['./assets/**']
-    }
+    files: ['./assets/**', './*.php', './*.html'],
+    proxy: 'http://localhost/webpack-boilerplate/'
 }));
 
-plugins.push(new extractTextPlugin('styles.css'));
+plugins.push(new extractTextPlugin('styles/styles.css', {
+    allChunks: true
+}));
 
 plugins.push(new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
@@ -42,7 +43,7 @@ plugins.push(new SpritesmithPlugin({
         css: path.resolve(__dirname, '../styles/common/_sprite.scss'),
     },
     apiOptions: {
-        cssImageRef: "../images/sprite.png",
+        cssImageRef: "/assets/images/sprite.png",
     },
 
 }));
@@ -90,13 +91,11 @@ plugins.push(new ImageminPlugin({
 module.exports = {
     entry: {
         app: './assets/build/app.js',
-        vendor: ['jquery', 'bootstrap']
+        vendor: ['jquery', 'bootstrap', 'reflect-metadata']
     },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '../../dist'),
-        pathinfo: true,
-        publicPath: 'http://localhost:3000'
     },
     module: {
         rules: [
@@ -107,7 +106,17 @@ module.exports = {
                     use: [{
                         loader: "css-loader"
                     }, {
-                        loader: "sass-loader"
+                        loader: 'postcss-loader', // Run post css actions
+                        options: {
+                            plugins: function () { // post css plugins, can be exported to postcss.config.js
+                                return [
+                                    require('precss'),
+                                    require('autoprefixer')
+                                ];
+                            }
+                        }
+                    }, {
+                        loader: 'sass-loader' // compiles Sass to CSS
                     }],
                 }),
             },
@@ -140,6 +149,14 @@ module.exports = {
                 enforce: "pre"
             },
             {
+                test: /\.css$/,
+                use: extractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
+                })
+
+            },
+            {
                 test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
                 loader: 'url-loader?limit=10000&mimetype=application/font-woff'
             },
@@ -154,6 +171,10 @@ module.exports = {
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
                 loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+            },
+            {
+                test: /\.(png|jpeg|jpg)$/,
+                loader: 'url-loader?limit=100000'
             }
         ]
     },

@@ -7,6 +7,7 @@ const SpritesmithPlugin = require('webpack-spritesmith');
 const ImageminPlugin  = require('imagemin-webpack-plugin').default;
 const CopyWebpackPlugin  = require('copy-webpack-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+const HtmlWepackPlugin = require('html-webpack-plugin');
 
 let plugins = [];
 
@@ -16,6 +17,7 @@ plugins.push(new BrowserSyncPlugin({
     files: ['./assets/**', './*.php', './*.html'],
     proxy: 'http://localhost/webpack-boilerplate/'
 }));
+
 
 plugins.push(new extractTextPlugin('styles/styles.css', {
     allChunks: true
@@ -48,7 +50,7 @@ plugins.push(new SpritesmithPlugin({
 
 }));
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'clear_cache') {
     plugins.push(new UglifyJsPlugin({
         uglifyOptions: {
             ecma: 8,
@@ -70,6 +72,20 @@ if (process.env.NODE_ENV === 'production') {
         canPrint: true
     }));
 }
+
+
+if (process.env.NODE_ENV === 'clear_cache') {
+    plugins.push(new HtmlWepackPlugin({
+        hash: true,
+        minify: {
+            collapseWhitespace: false,
+            removeComments: true
+        },
+        filename: './index.html',
+        template: './main.html'
+    }));
+}
+
 
 plugins.push(new CopyWebpackPlugin([{
     from: 'assets/images/',

@@ -50,7 +50,15 @@ plugins.push(new SpritesmithPlugin({
 
 }));
 
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'clear_cache') {
+let SERVICE_URL = JSON.stringify('http://localhost:3000');
+
+
+if (process.env.NODE_ENV === 'production') {
+
+    let SERVICE_URL = JSON.stringify('http://url-de-producao');
+
+    plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+
     plugins.push(new UglifyJsPlugin({
         uglifyOptions: {
             ecma: 8,
@@ -71,21 +79,21 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'clear_cac
         },
         canPrint: true
     }));
-}
 
-
-if (process.env.NODE_ENV === 'clear_cache') {
     plugins.push(new HtmlWepackPlugin({
         hash: true,
         minify: {
+            html5: true,
             collapseWhitespace: false,
             removeComments: true
         },
-        filename: './index.html',
-        template: './main.html'
+        filename: './manifest.html',
+        template: './manifest.html'
     }));
+
 }
 
+plugins.push(new webpack.DefinePlugin({ SERVICE_URL }));
 
 plugins.push(new CopyWebpackPlugin([{
     from: 'assets/images/',

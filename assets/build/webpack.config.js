@@ -15,7 +15,7 @@ plugins.push(new BrowserSyncPlugin({
     host: 'localhost',
     port: 3000,
     files: ['./assets/**', './*.php', './*.html'],
-    proxy: 'http://localhost/webpack-boilerplate/'
+    proxy: 'http://localhost/webpack-boilerplate/' // endereço de dev local
 }));
 
 
@@ -87,7 +87,7 @@ if (process.env.NODE_ENV === 'production') {
             collapseWhitespace: false,
             removeComments: true
         },
-        filename: './manifest.html',
+        filename: '../generated.html',
         template: './manifest.html'
     }));
 
@@ -130,9 +130,9 @@ module.exports = {
                     use: [{
                         loader: "css-loader"
                     }, {
-                        loader: 'postcss-loader', // Run post css actions
+                        loader: 'postcss-loader',
                         options: {
-                            plugins: function () { // post css plugins, can be exported to postcss.config.js
+                            plugins: function () {
                                 return [
                                     require('precss'),
                                     require('autoprefixer')
@@ -140,7 +140,7 @@ module.exports = {
                             }
                         }
                     }, {
-                        loader: 'sass-loader' // compiles Sass to CSS
+                        loader: 'sass-loader'
                     }],
                 }),
             },
